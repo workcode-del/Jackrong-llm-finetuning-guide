@@ -94,7 +94,7 @@
 
 ---
 
-## Qwen MTP GGUF Conversion Skill
+## ⚙️ Qwen MTP GGUF Conversion Skill
 
 <div align="center">
 
@@ -105,20 +105,26 @@
 
 </div>
 
-[`qwen-mtp-gguf`](../qwen-mtp-gguf/) サブプロジェクトは、互換性のある Qwen 系 fine-tune を MTP-enabled GGUF リリースへ変換するための agent-ready ワークフローです。環境の事前チェック、MTP/nextn tensor の抽出、HF モデル準備、llama.cpp 変換、smoke test、量子化、アップロード/再開サポートを一つの再現可能な pipeline にまとめています。
+> [!NOTE]
+> **MTP とは？** MTP は一般に **Multi-Token Prediction** を指し、追加の予測 head によってモデルが複数の未来 token を扱いやすくする構造です。互換性のある Qwen 系モデルでは、GGUF 変換前に MTP または `nextn` tensors が正しく存在し、index に記録されている必要があります。これにより downstream runtime が acceleration-ready な構造を利用できます。
 
-**MTP とは？** MTP は一般に Multi-Token Prediction を指し、追加の予測 head によってモデルが複数の未来 token を扱いやすくする仕組みです。互換性のある Qwen 系モデルでは、GGUF 変換前に MTP または `nextn` tensors が正しく存在し、index に記録されている必要があります。これにより downstream runtime がその構造を利用できます。
+> [!TIP]
+> [`qwen-mtp-gguf`](../qwen-mtp-gguf/) サブプロジェクトは、壊れやすい手作業のリリース工程を agent-ready な staged pipeline に整理します。マシンの確認、互換性検証、MTP tensor 注入、llama.cpp 変換、ローカル smoke test、量子化、再開可能なアップロードを一つの流れにまとめます。
 
-<table>
-  <tr>
-    <td><strong>Preflight first</strong><br/>大きなファイルをダウンロードする前に、RAM、ディスク、llama.cpp ツール、Hugging Face アクセス、config 互換性を確認します。</td>
-    <td><strong>Minimal MTP extraction</strong><br/>MTP/nextn tensors を含む source shard だけをダウンロードし、target model index に注入します。</td>
-  </tr>
-  <tr>
-    <td><strong>Release-grade GGUF flow</strong><br/>F16/BF16 と一般的な K/IQ quant 形式を作成し、アップロード前に Qwen ChatML ローカル smoke test を実行します。</td>
-    <td><strong>Disk-aware uploading</strong><br/>大規模モデルのリリース向けに、stream upload、resume check、retry、アップロード確認後の cleanup をサポートします。</td>
-  </tr>
-</table>
+### ✨ What This Skill Handles
+
+| Stage | What it does | Why it matters |
+| :--- | :--- | :--- |
+| 🧭 **Preflight** | RAM、disk、llama.cpp tools、Hugging Face access、target/source config compatibility を確認します。 | 大きなダウンロードや長い変換の前に、実行できない作業を止めます。 |
+| 🧩 **MTP Extraction** | MTP/nextn tensors を含む source shards だけをダウンロードし、target model index に注入します。 | 少量の MTP heads のために source model 全体を取得する必要を減らします。 |
+| 🧪 **Local Validation** | 生成された GGUF ファイルに Qwen ChatML smoke test を実行します。 | 公開リリース前に壊れた変換結果を検出します。 |
+| 📦 **Release Workflow** | F16/BF16 と一般的な K/IQ quant 形式を作成し、stream upload、retry、resume check、cleanup をサポートします。 | ディスク容量が限られたマシンでも大規模 GGUF リリースを進めやすくします。 |
+
+### 🚀 Key Advantages
+
+- **Agent-ready by design:** Codex、Claude Code、OpenCode、Qwen Code、shell-capable agents が同じ staged workflow を使えます。
+- **Disk-aware for large models:** `stream` mode は GGUF を一つずつ量子化、アップロード、cleanup できます。
+- **Public-release friendly:** 例は placeholders を使い、private paths、tokens、machine-specific logs を公開文書に含めません。
 
 **開始はこちら：** [README](../qwen-mtp-gguf/README.md) · [Pipeline Guide](../qwen-mtp-gguf/docs/Qwen-MTP-GGUF-Pipeline-Guide.md) · [Agent Usage Guide](../qwen-mtp-gguf/docs/Qwen-MTP-GGUF-Agent-Usage.md)
 

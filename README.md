@@ -94,7 +94,7 @@ Below are the interactive Kaggle and Colab notebooks, organized by model archite
 
 ---
 
-## Qwen MTP GGUF Conversion Skill
+## ⚙️ Qwen MTP GGUF Conversion Skill
 
 <div align="center">
 
@@ -105,20 +105,26 @@ Below are the interactive Kaggle and Colab notebooks, organized by model archite
 
 </div>
 
-The [`qwen-mtp-gguf`](./qwen-mtp-gguf/) subproject is an agent-ready workflow for converting compatible Qwen-family fine-tunes into MTP-enabled GGUF releases. It combines environment preflight, MTP/nextn tensor extraction, HF model preparation, llama.cpp conversion, smoke testing, quantization, and upload/resume support in one reproducible pipeline.
+> [!NOTE]
+> **What is MTP?** MTP usually refers to **Multi-Token Prediction**: an architecture path where extra prediction heads help the model reason about more than one future token. For compatible Qwen-family models, these MTP or `nextn` tensors must be present and correctly indexed before GGUF conversion, otherwise downstream runtimes may miss the acceleration-ready structure.
 
-**What is MTP?** MTP usually refers to Multi-Token Prediction, a model capability where additional prediction heads help the model predict more than one future token during inference-oriented workflows. For compatible Qwen-family models, these MTP or `nextn` tensors need to be present and correctly indexed before GGUF conversion, otherwise downstream runtimes may miss the acceleration-ready structure.
+> [!TIP]
+> The [`qwen-mtp-gguf`](./qwen-mtp-gguf/) subproject turns a fragile manual release process into a staged, agent-ready pipeline: inspect the machine, verify compatibility, inject MTP tensors, convert with llama.cpp, smoke-test locally, quantize, and upload with resume support.
 
-<table>
-  <tr>
-    <td><strong>Preflight first</strong><br/>Checks RAM, disk, llama.cpp tools, Hugging Face access, and config compatibility before large downloads.</td>
-    <td><strong>Minimal MTP extraction</strong><br/>Downloads only the source shards that contain MTP/nextn tensors, then injects them into the target model index.</td>
-  </tr>
-  <tr>
-    <td><strong>Release-grade GGUF flow</strong><br/>Builds F16/BF16 and common K/IQ quant formats with local Qwen ChatML smoke tests before upload.</td>
-    <td><strong>Disk-aware uploading</strong><br/>Supports stream upload, resume checks, retries, and cleanup after confirmed uploads for large model releases.</td>
-  </tr>
-</table>
+### ✨ What This Skill Handles
+
+| Stage | What it does | Why it matters |
+| :--- | :--- | :--- |
+| 🧭 **Preflight** | Checks RAM, disk, llama.cpp tools, Hugging Face access, and target/source config compatibility. | Stops unsafe runs before large model downloads or long conversions begin. |
+| 🧩 **MTP Extraction** | Downloads only shards containing MTP/nextn tensors and injects them into the target model index. | Avoids full source-model downloads when only MTP heads are needed. |
+| 🧪 **Local Validation** | Runs Qwen ChatML smoke tests on generated GGUF files before upload. | Catches broken conversions before public release artifacts are published. |
+| 📦 **Release Workflow** | Builds F16/BF16 and common K/IQ quant formats, then supports stream upload, retries, resume checks, and cleanup. | Makes large GGUF releases practical on disk-limited machines. |
+
+### 🚀 Key Advantages
+
+- **Agent-ready by design:** Codex, Claude Code, OpenCode, Qwen Code, and shell-capable agents can follow the same staged workflow.
+- **Disk-aware for large models:** `stream` mode can quantize, upload, and clean up one GGUF at a time.
+- **Public-release friendly:** examples use placeholders, and the docs avoid private paths, tokens, and machine-specific logs.
 
 **Start here:** [README](./qwen-mtp-gguf/README.md) · [Pipeline Guide](./qwen-mtp-gguf/docs/Qwen-MTP-GGUF-Pipeline-Guide.md) · [Agent Usage Guide](./qwen-mtp-gguf/docs/Qwen-MTP-GGUF-Agent-Usage.md)
 
