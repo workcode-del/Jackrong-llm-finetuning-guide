@@ -96,17 +96,10 @@
 
 ## ⚙️ Qwen MTP GGUF 转换 Skill
 
-<div align="center">
-
-[![Qwen](https://img.shields.io/badge/Model-Qwen-7C3AED?style=flat-square)](../qwen-mtp-gguf/)
-[![GGUF](https://img.shields.io/badge/Output-GGUF-0891B2?style=flat-square)](../qwen-mtp-gguf/)
-[![llama.cpp](https://img.shields.io/badge/Runtime-llama.cpp-10B981?style=flat-square)](https://github.com/ggml-org/llama.cpp)
-[![Agent Ready](https://img.shields.io/badge/Workflow-Agent--Ready-F59E0B?style=flat-square)](../qwen-mtp-gguf/docs/Qwen-MTP-GGUF-Agent-Usage.md)
-
-</div>
+所有 Qwopus 的 MTP 版本都是通过以下转换管线完成并测试的。
 
 > [!NOTE]
-> **什么是 MTP？** MTP 通常指 **Multi-Token Prediction**，也就是通过额外预测头帮助模型处理多个未来 token 的一种结构路径。对于兼容的 Qwen 系列模型，MTP 或 `nextn` tensors 必须在 GGUF 转换前正确存在并写入索引，否则下游 runtime 可能无法使用这部分面向加速的结构。
+> **什么是 MTP？** MTP（**Multi Token Prediction**）speculative decoding 可以让 Qwen3.6 这类模型在**准确率不变**的情况下获得约 **1.4-2.2x** 的生成速度提升。这使 Qwen3.6 27B 和 35B-A3B 相比原始 baseline 获得**超过 1.4x** 的速度提升，尤其适合本地模型使用场景。
 
 > [!TIP]
 > [`qwen-mtp-gguf`](../qwen-mtp-gguf/) 子项目把容易出错的手工发布流程整理成一条面向 agent 的分阶段 pipeline：检查机器资源、验证兼容性、注入 MTP tensors、使用 llama.cpp 转换、本地 smoke test、量化，并支持续传上传。

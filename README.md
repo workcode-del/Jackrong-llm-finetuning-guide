@@ -96,17 +96,10 @@ Below are the interactive Kaggle and Colab notebooks, organized by model archite
 
 ## ⚙️ Qwen MTP GGUF Conversion Skill
 
-<div align="center">
-
-[![Qwen](https://img.shields.io/badge/Model-Qwen-7C3AED?style=flat-square)](./qwen-mtp-gguf/)
-[![GGUF](https://img.shields.io/badge/Output-GGUF-0891B2?style=flat-square)](./qwen-mtp-gguf/)
-[![llama.cpp](https://img.shields.io/badge/Runtime-llama.cpp-10B981?style=flat-square)](https://github.com/ggml-org/llama.cpp)
-[![Agent Ready](https://img.shields.io/badge/Workflow-Agent--Ready-F59E0B?style=flat-square)](./qwen-mtp-gguf/docs/Qwen-MTP-GGUF-Agent-Usage.md)
-
-</div>
+All Qwopus MTP releases are completed and tested through the following conversion pipeline.
 
 > [!NOTE]
-> **What is MTP?** MTP usually refers to **Multi-Token Prediction**: an architecture path where extra prediction heads help the model reason about more than one future token. For compatible Qwen-family models, these MTP or `nextn` tensors must be present and correctly indexed before GGUF conversion, otherwise downstream runtimes may miss the acceleration-ready structure.
+> **What is MTP?** MTP (**Multi Token Prediction**) speculative decoding enables models like Qwen3.6 to reach about **1.4-2.2x faster generation with no change in accuracy**. This enables Qwen3.6 27B and 35B-A3B to achieve **more than 1.4x speed-up over the original baseline**, which is especially useful for local models.
 
 > [!TIP]
 > The [`qwen-mtp-gguf`](./qwen-mtp-gguf/) subproject turns a fragile manual release process into a staged, agent-ready pipeline: inspect the machine, verify compatibility, inject MTP tensors, convert with llama.cpp, smoke-test locally, quantize, and upload with resume support.
